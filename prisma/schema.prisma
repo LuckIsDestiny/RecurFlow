@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique()
+  name      String?
+  company   String?
+  documents Document[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+enum DocumentType {
+  CONTRACT
+  SUBSCRIPTION
+  INVOICE
+  OTHER
+}
+
+enum DocumentStatus {
+  ACTIVE
+  UPCOMING_RENEWAL
+  EXPIRED
+  CANCELLED
+}
+
+model Document {
+  id          String         @id @default(uuid())
+  title       String
+  type        DocumentType   @default(CONTRACT)
+  status      DocumentStatus @default(ACTIVE)
+  fileUrl     String?
+  startDate   DateTime?
+  renewalDate DateTime
+  vendor      String?
+  cost        Decimal?       @db.Decimal(10, 2)
+  currency    String         @default("USD")
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
