@@ -1,22 +1,32 @@
 # Dependencies
 node_modules/
 
-# Compiled Output
+# Compiled Output & Generated Files
 dist/
+src/generated/
 
 # Environment Variables & Secrets
 .env
 .env.*
 !.env.example
 
-# Logs
+# AI / Editor Agent Rules & Skills
+.skills/
+*.skills-lock
+*.skills-lock.json
+.cursor/
+.cursorrules
+.windsurf/
+.windsurfrules
+
+# Logs & Cache
 *.log
 npm-debug.log*
+.turbo/
+.cache/
 
-# OS & Editor Files
+# OS & IDE
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-
-/src/generated/prisma
