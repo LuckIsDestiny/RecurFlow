@@ -34,3 +34,13 @@ npm install --save-dev prisma@7
 ```
 npx prisma init
 ```
+
+#### Prisma Migrate
+```
+npx prisma migrate dev --name init
+```
+
+#### Prisma Generate
+```
+npx prisma generate
+```
