@@ -9,8 +9,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/users", userRoutes);
-app.use("/documents", documentRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/documents", documentRoutes);
 
 app.use(errorHandler);
 

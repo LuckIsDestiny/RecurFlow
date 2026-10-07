@@ -1,59 +1,17 @@
 import express from "express";
-import {
-  createDocument,
-  deleteDocument,
-  getDocumentById,
-  getDocuments,
-  getDocumentSummary,
-  getExpiredDocuments,
-  getUpcomingRenewals,
-  renewDocument,
-  updateDocument,
-} from "./documentController";
-import {
-  createDocumentSchema,
-  documentIdParam,
-  upcomingRenewalSchema,
-  updateDocumentSchema,
-} from "./documentSchema";
-import { validate } from "../../common/middlewares/validate";
+import * as documentController from "./documentController";
 import { catchAsync } from "../../common/utils/catchAsync";
 
 const router = express.Router();
 
-router.post(
-  "/",
-  validate(createDocumentSchema, "body"),
-  catchAsync(createDocument),
-);
-router.get(
-  "/upcoming",
-  validate(upcomingRenewalSchema, "query"),
-  catchAsync(getUpcomingRenewals),
-);
-router.get("/summary", catchAsync(getDocumentSummary));
-router.get("/expired", catchAsync(getExpiredDocuments));
-router.get("/", getDocuments);
-router.get(
-  "/:id",
-  validate(documentIdParam, "params"),
-  catchAsync(getDocumentById),
-);
-router.patch(
-  "/:id",
-  validate(documentIdParam, "params"),
-  validate(updateDocumentSchema, "body"),
-  catchAsync(updateDocument),
-);
-router.patch(
-  "/:id/renew",
-  validate(documentIdParam, "params"),
-  catchAsync(renewDocument),
-);
-router.delete(
-  "/:id",
-  validate(documentIdParam, "params"),
-  catchAsync(deleteDocument),
-);
+router.post("/", catchAsync(documentController.createDocument));
+router.get("/upcoming", catchAsync(documentController.getUpcomingRenewals));
+router.get("/summary", catchAsync(documentController.getDocumentSummary));
+router.get("/expired", catchAsync(documentController.getExpiredDocuments));
+router.get("/", catchAsync(documentController.getDocuments));
+router.get("/:id", catchAsync(documentController.getDocumentById));
+router.patch("/:id", catchAsync(documentController.updateDocument));
+router.patch("/:id/renew", catchAsync(documentController.renewDocument));
+router.delete("/:id", catchAsync(documentController.deleteDocument));
 
 export default router;

@@ -1,30 +1,14 @@
 import express from "express";
-import {
-  createUser,
-  getUserById,
-  getUserDocuments,
-  getUsers,
-  updateUser,
-} from "./userController";
-import { validate } from "../../common/middlewares/validate";
-import { createUserSchema, updateUserSchema, userIdParam } from "./userSchema";
+import * as userController from "./userController";
 import { catchAsync } from "../../common/utils/catchAsync";
 
 const router = express.Router();
 
-router.post("/", validate(createUserSchema), catchAsync(createUser));
-router.get("/", catchAsync(getUsers));
-router.get("/:id", validate(userIdParam, "params"), catchAsync(getUserById));
-router.patch(
-  "/:id",
-  validate(userIdParam, "params"),
-  validate(updateUserSchema),
-  catchAsync(updateUser),
-);
-router.get(
-  "/:id/documents",
-  validate(userIdParam, "params"),
-  catchAsync(getUserDocuments),
-);
+router.post("/", catchAsync(userController.createUser));
+router.get("/", catchAsync(userController.getUsers));
+router.get("/:id", catchAsync(userController.getUserById));
+router.get("/:id/documents", catchAsync(userController.getUserDocuments));
+router.patch("/:id", catchAsync(userController.updateUser));
+router.delete("/:id", catchAsync(userController.deleteUser));
 
 export default router;
