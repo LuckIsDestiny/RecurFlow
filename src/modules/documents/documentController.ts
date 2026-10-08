@@ -3,6 +3,7 @@ import * as documentService from "./documentService";
 import {
   createDocumentSchema,
   documentIdParam,
+  getDocumentsQuerySchema,
   upcomingRenewalSchema,
   updateDocumentSchema,
   userIdParam,
@@ -33,9 +34,9 @@ export const getDocumentSummary = async (req: Request, res: Response) => {
 };
 
 export const getDocuments = async (req: Request, res: Response) => {
-  const { userId } = userIdParam.parse(req.query);
-  const documents = await documentService.getDocuments(userId);
-  res.status(201).json({ status: "success", data: documents });
+  const queryInput = getDocumentsQuerySchema.parse(req.query);
+  const documents = await documentService.getDocuments(queryInput);
+  res.status(200).json({ status: "success", data: documents });
 };
 
 export const getDocumentById = async (req: Request, res: Response) => {

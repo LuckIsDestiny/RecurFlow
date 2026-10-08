@@ -1,7 +1,9 @@
 import { prisma } from "../../common/lib/prisma";
 import { AppError } from "../../common/utils/AppError";
+import type { Prisma } from "../../generated/prisma/client";
 import type {
   CreateDocumentSchema,
+  GetDocumentsQuerySchema,
   UpcomingRenewalSchema,
   UpdateDocumentSchema,
 } from "./documentSchema";
@@ -10,8 +12,39 @@ export const createDocuments = async (data: CreateDocumentSchema) => {
   return await prisma.document.create({ data });
 };
 
-export const getDocuments = async (userId: string) => {
-  return await prisma.document.findMany({ where: { userId } });
+export const getDocuments = async (queryInput: GetDocumentsQuerySchema) => {
+  const whereClause: Prisma.DocumentWhereInput = {
+    userId: queryInput.userId,
+    status: queryInput.status,
+    type: queryInput.type,
+    ...(queryInput.search && {
+      OR: [
+        { title: { contains: queryInput.search, mode: "insensitive" } },
+        { vendor: { contains: queryInput.search, mode: "insensitive" } },
+      ],
+    }),
+  };
+
+  const [documents, totalItems] = await Promise.all([
+    prisma.document.findMany({
+      where: whereClause,
+      orderBy: {
+        [queryInput.sortBy]: queryInput.sortOrder,
+      },
+      skip: (queryInput.page - 1) * queryInput.limit,
+      take: queryInput.limit,
+    }),
+    prisma.document.count({ where: whereClause }),
+  ]);
+
+  return {
+    data: documents,
+    meta: {
+      totalItems,
+      currentPage: queryInput.page,
+      totalPages: Math.ceil(totalItems / queryInput.limit),
+    },
+  };
 };
 
 export const getUpcomingRenewals = async (data: UpcomingRenewalSchema) => {

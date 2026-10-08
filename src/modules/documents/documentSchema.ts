@@ -14,6 +14,7 @@ export const DocumentType = [
   "INVOICE",
   "OTHER",
 ] as const;
+
 export const DocumentStatus = [
   "ACTIVE",
   "CANCELLED",
@@ -47,6 +48,19 @@ export const upcomingRenewalSchema = z.object({
   days: z.string().min(1).pipe(z.coerce.number()).default(30),
   userId: z.uuid(), // Remove once auth is integrated
 });
+
+export const getDocumentsQuerySchema = z.object({
+  userId: z.uuid(), // Temp: remove after Authentication is added
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(10),
+  sortBy: z.enum(["renewalDate", "cost", "createdAt"]).default("createdAt"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
+  status: z.enum(DocumentStatus).optional(),
+  type: z.enum(DocumentType).optional(),
+  search: z.string().optional(),
+});
+
+export type GetDocumentsQuerySchema = z.infer<typeof getDocumentsQuerySchema>;
 
 export type CreateDocumentSchema = z.infer<typeof createDocumentSchema>;
 export type UpdateDocumentSchema = z.infer<typeof updateDocumentSchema>;
