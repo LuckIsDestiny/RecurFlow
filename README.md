@@ -44,3 +44,10 @@ npx prisma migrate dev --name init
 ```
 npx prisma generate
 ```
+
+### (III): JWT Initialization
+
+```
+npm install bcrypt jsonwebtoken
+npm install --save-dev @types/bcrypt @types/jsonwebtoken
+```
