@@ -1,13 +1,5 @@
 import { z } from "zod";
 
-// Temp: remove after Authentication is added
-export const userIdParam = z.object({
-  userId: z.uuid(),
-});
-
-export type UserIdParam = z.infer<typeof userIdParam>;
-//
-
 export const DocumentType = [
   "CONTRACT",
   "SUBSCRIPTION",
@@ -33,12 +25,9 @@ export const createDocumentSchema = z.object({
   vendor: z.string().optional(),
   cost: z.number().positive().optional(),
   currency: z.string().length(3).toUpperCase().default("USD").optional(),
-  userId: z.uuid(), // remove once auth is added
 });
 
-export const updateDocumentSchema = createDocumentSchema
-  .omit({ userId: true })
-  .partial();
+export const updateDocumentSchema = createDocumentSchema.partial();
 
 export const documentIdParam = z.object({
   id: z.uuid(),
@@ -46,11 +35,9 @@ export const documentIdParam = z.object({
 
 export const upcomingRenewalSchema = z.object({
   days: z.string().min(1).pipe(z.coerce.number()).default(30),
-  userId: z.uuid(), // Remove once auth is integrated
 });
 
 export const getDocumentsQuerySchema = z.object({
-  userId: z.uuid(), // Temp: remove after Authentication is added
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(10),
   sortBy: z.enum(["renewalDate", "cost", "createdAt"]).default("createdAt"),

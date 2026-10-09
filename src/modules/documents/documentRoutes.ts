@@ -1,8 +1,11 @@
 import express from "express";
 import * as documentController from "./documentController";
 import { catchAsync } from "../../common/utils/catchAsync";
+import { authenticate } from "../../common/middlewares/authenticate";
 
 const router = express.Router();
+
+router.use(catchAsync(authenticate));
 
 router.post("/", catchAsync(documentController.createDocument));
 router.get("/upcoming", catchAsync(documentController.getUpcomingRenewals));

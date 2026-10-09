@@ -1,12 +1,6 @@
 import type { Request, Response } from "express";
 import * as userService from "./userService";
-import { createUserSchema, userIdParam } from "./userSchema";
-
-export const createUser = async (req: Request, res: Response) => {
-  const data = createUserSchema.parse(req.body);
-  const newUser = await userService.createUser(data);
-  res.status(201).json({ status: "success", data: newUser });
-};
+import { updateUserSchema, userIdParam } from "./userSchema";
 
 export const getUsers = async (_req: Request, res: Response) => {
   const users = await userService.getAllUsers();
@@ -21,7 +15,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = userIdParam.parse(req.params);
-  const data = createUserSchema.parse(req.body);
+  const data = updateUserSchema.parse(req.body);
   const newUser = await userService.updateUser(id, data);
   res.status(200).json({ status: "success", data: newUser });
 };

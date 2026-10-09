@@ -1,10 +1,6 @@
 import { prisma } from "../../common/lib/prisma";
 import { AppError } from "../../common/utils/AppError";
-import type { CreateUserSchema, UpdateUserSchema } from "./userSchema";
-
-export const createUser = async (data: CreateUserSchema) => {
-  return await prisma.user.create({ data });
-};
+import type { UpdateUserSchema } from "./userSchema";
 
 export const getAllUsers = async () => {
   return await prisma.user.findMany();

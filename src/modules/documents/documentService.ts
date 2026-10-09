@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { prisma } from "../../common/lib/prisma";
 import { AppError } from "../../common/utils/AppError";
 import type { Prisma } from "../../generated/prisma/client";
@@ -8,13 +9,16 @@ import type {
   UpdateDocumentSchema,
 } from "./documentSchema";
 
-export const createDocuments = async (data: CreateDocumentSchema) => {
-  return await prisma.document.create({ data });
+export const createDocuments = async (
+  data: CreateDocumentSchema,
+  userId: string,
+) => {
+  return await prisma.document.create({ data: { userId, ...data } });
 };
 
-export const getDocuments = async (queryInput: GetDocumentsQuerySchema) => {
+export const getDocuments = async (queryInput: GetDocumentsQuerySchema, userId: string) => {
   const whereClause: Prisma.DocumentWhereInput = {
-    userId: queryInput.userId,
+    userId,
     status: queryInput.status,
     type: queryInput.type,
     ...(queryInput.search && {
@@ -47,10 +51,10 @@ export const getDocuments = async (queryInput: GetDocumentsQuerySchema) => {
   };
 };
 
-export const getUpcomingRenewals = async (data: UpcomingRenewalSchema) => {
+export const getUpcomingRenewals = async (data: UpcomingRenewalSchema, userId: string) => {
   return await prisma.document.findMany({
     where: {
-      userId: data.userId,
+      userId,
       renewalDate: {
         gte: new Date(),
         lte: new Date(Date.now() + data.days * 24 * 60 * 60 * 1000),

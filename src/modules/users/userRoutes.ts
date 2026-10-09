@@ -1,11 +1,14 @@
 import express from "express";
 import * as userController from "./userController";
 import { catchAsync } from "../../common/utils/catchAsync";
+import { authenticate } from "../../common/middlewares/authenticate";
+import { restrictTo } from "../../common/middlewares/restrictTo";
 
 const router = express.Router();
 
-router.post("/", catchAsync(userController.createUser));
-router.get("/", catchAsync(userController.getUsers));
+router.use(catchAsync(authenticate));
+
+router.get("/", restrictTo("ADMIN"), catchAsync(userController.getUsers));
 router.get("/:id", catchAsync(userController.getUserById));
 router.get("/:id/documents", catchAsync(userController.getUserDocuments));
 router.patch("/:id", catchAsync(userController.updateUser));
